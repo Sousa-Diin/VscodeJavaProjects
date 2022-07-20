@@ -5,14 +5,14 @@ import java.util.Random;
 
 public class Simulador {
 
-    private Queue<Cliente> clientes;
+    private Queue<Cliente> filaClientes;
     private ArrayList<Atendente> atendentes;
     private int numeroAtendentes;
-    private static int duracaoSimulacao;
-    private static Random numero_gerado = new Random();// VAR da class
+    private  int duracaoSimulacao;
+   //private static Random numero_gerado = new Random();// VAR da class
 
     public Simulador(int numeroAtendentes, int duracaoSimulacao){
-        clientes = new LinkedList<>();
+        filaClientes = new LinkedList<>();
         atendentes = new ArrayList<>();
         this.numeroAtendentes = numeroAtendentes;
         this.duracaoSimulacao = duracaoSimulacao;
@@ -20,24 +20,29 @@ public class Simulador {
         criaListaAtendente();
         
     }
-    /*  //contrutor padrao
-    public Simulador() {
-    }*/
-    public static int getDuracaoSimulacao() {
+    
+    public  int getDuracaoSimulacao() {
         return duracaoSimulacao;
         
     }
 
-    protected void criaFilaCliente(){
-        int duracao_atendimento = sorteioDAC();
-        int tempo_chegada_cliete = sorteioTCC();
-            
-        clientes.offer(new Cliente(tempo_chegada_cliete, duracao_atendimento));
+    private void criaFilaCliente(){
+        int duracao_atendimento; 
+        int tempo_chegada_cliete  = 0;
+        //Random numero_gerado = new Random();
 
-        /*//Atualiza variaveis
-        duracao_atendimento = sorteioDA();
-        tempo_chegada_cliete = sorteioTCC();*/
-    
+        for(int c = 0; c < 1000;c++)  {
+            Random numero_gerado = new Random();
+            tempo_chegada_cliete += numero_gerado.nextInt(4);
+            duracao_atendimento = numero_gerado.nextInt(7)+1;
+
+            if ((tempo_chegada_cliete + duracao_atendimento) <= duracaoSimulacao)
+            filaClientes.offer(new Cliente(tempo_chegada_cliete, duracao_atendimento));
+            else{
+                c = 1000;
+            }
+        }  
+        
     }
 
     private void criaListaAtendente(){
@@ -47,18 +52,6 @@ public class Simulador {
         }
 
     }
-    //Metodo da classe 
-    private int sorteioTCC (){
-        //tempo_chegada_cliete
-        return numero_gerado.nextInt(4);       
-    }
-
-    //Metodo da classe 
-    private int sorteioDAC(){
-        //duracao_atendimento_cliente
-        return  numero_gerado.nextInt(7) + 1;
-    }
-
     
 
     @Override
@@ -67,25 +60,38 @@ public class Simulador {
     }
 
     public void simular(){
+
+        System.out.printf("\n\nTamanho inicial da fila: %d\n\n", filaClientes.size());
         //Loop da Interacão da simulacão - INICIO
-        for(int t_atual = 0; t_atual < duracaoSimulacao; t_atual+=3){
+        for(int t_atual = 0; t_atual < duracaoSimulacao; t_atual++){
             for(Atendente atd : atendentes){
+               //Consulta se a fila esta vazia
+                if(!filaClientes.isEmpty()){
                 //Consulta se o atendente esta disponivel
-                if(atd.estaDisponivel(t_atual))
-                //Consulta se a fila esta vazia
-                    if(!clientes.isEmpty()){
+                    if(atd.estaDisponivel(t_atual)){
                     //Consulta na Fila Cliente se duracao do Atendimento é menor que a duracão da simulacão
-                    
-                        atd.atenderCliente(clientes.peek().getDuracaoAtendimento());
-                        System.out.printf("\n\nTamanho da fila: %d\n", clientes.size());
-                        System.out.printf("Tempo de chegada do clienta: %d\n", clientes.poll().getTempoChegada());
-                        System.out.println("Duracão do atendimento: " + atendentes.get(t_atual).getProximo_atendimento());
-                        System.out.println("Duracão da simulacão: " + t_atual);
-                        System.out.println("TempoSimulacao - TempoAtual = : " + (t_atual));
-                    }        
-                            
-                        
+                        if(filaClientes.peek().getTempoChegada() <= t_atual){
+                            atd.atenderCliente(filaClientes.poll().getDuracaoAtendimento());    
+                        }
+                    } 
+                }                                                        
             }
+            if(!filaClientes.isEmpty()){
+                System.out.printf("\nTempo atual: %d minutos\nDuracão do atendimento: %d \nTamanho atual da fila: %d clientes\n\n", t_atual, filaClientes.peek().getDuracaoAtendimento(),filaClientes.size());
+                
+            }else{
+                System.out.printf("\nTempo atual: %d minutos\nFim - a fila esta vazia parabéns atendentes.\n", t_atual,filaClientes.size());
+                t_atual = duracaoSimulacao;
+            }
+            
+           /* 
+            if(!filaClientes.isEmpty())
+                System.out.printf("Tempo atual: %d minutos;\nTamanho atual da fila: %d clientes\n\n",t_atual,filaClientes.size());  
+            else{
+                System.out.printf("Tempo atual: %d minutos;\nA fila de clientes esta vazia.\nFIM DA SIMULACAO\n", t_atual);  
+                t_atual = duracaoSimulacao;
+            }*/
+            
         }
         // FIM - da interacão
         
