@@ -9,7 +9,8 @@ public class Simulador {
     private ArrayList<Atendente> atendentes;
     private int numeroAtendentes;
     private  int duracaoSimulacao;
-   //private static Random numero_gerado = new Random();// VAR da class
+    private static int contaCaixa = 0;
+   
 
     public Simulador(int numeroAtendentes, int duracaoSimulacao){
         filaClientes = new LinkedList<>();
@@ -49,8 +50,13 @@ public class Simulador {
         for(int i = 0; i < numeroAtendentes; i++){
             Atendente a = new Atendente();
             atendentes.add(a);
+            
         }
 
+    }
+
+    public static int contaAtendente(){
+        return contaCaixa;
     }
     
 
@@ -64,14 +70,16 @@ public class Simulador {
         System.out.printf("\n\nTamanho inicial da fila: %d\n\n", filaClientes.size());
         //Loop da Interacão da simulacão - INICIO
         for(int t_atual = 0; t_atual < duracaoSimulacao; t_atual++){
-            for(Atendente atd : atendentes){
+            int atd;
+            for(/*Atendente atd : atendentes*/atd = 0; atd < atendentes.size();atd++){
                //Consulta se a fila esta vazia
                 if(!filaClientes.isEmpty()){
                 //Consulta se o atendente esta disponivel
-                    if(atd.estaDisponivel(t_atual)){
+                    if(atendentes.get(atd).estaDisponivel(t_atual)){
                     //Consulta na Fila Cliente se duracao do Atendimento é menor que a duracão da simulacão
                         if(filaClientes.peek().getTempoChegada() <= t_atual){
-                            atd.atenderCliente(filaClientes.poll().getDuracaoAtendimento());    
+                            atendentes.get(atd).atenderCliente(filaClientes.poll().getDuracaoAtendimento());
+                            System.out.println("Atendente: " + atd);    
                         }
                     } 
                 }                                                        

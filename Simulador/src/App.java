@@ -1,8 +1,12 @@
 public class App {
-    public static void main(String[] args) throws Exception {
 
+    public static void main(String[] args) throws Exception {
+        
         //Inicia a Simulacão
-        Simulador simulacao = new Simulador(4,720);
+        int numeroAtendentes = 3;
+        
+        Simulador simulacao = new Simulador(numeroAtendentes,100);
+        
         
         System.out.println("\n\n\tIniciando simulacão!!!");
     
@@ -11,4 +15,5 @@ public class App {
               
         
     }
+ 
 }

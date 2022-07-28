@@ -4,6 +4,7 @@ public class Atendente {
 
     public Atendente(){
         proximo_atendimento = 0;
+        
     }
     public int getProximo_atendimento() {
         return proximo_atendimento;
@@ -18,6 +19,10 @@ public class Atendente {
     
         return proximo_atendimento <= tempo_atual_simulacao; 
         
+    }
+
+    public int qtdAtendente(){
+        return Simulador.contaAtendente();
     }
 
 
